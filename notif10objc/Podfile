@@ -1,0 +1,6 @@
+use_frameworks!
+
+target 'notif10objc' do
+    platform :ios, '10.0'
+    pod 'CleverTap-iOS-SDK'
+end

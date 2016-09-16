@@ -1,0 +1,6 @@
+framework module Pods_notif10objc {
+  umbrella header "Pods-notif10objc-umbrella.h"
+
+  export *
+  module * { export * }
+}
