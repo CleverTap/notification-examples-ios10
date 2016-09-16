@@ -13,7 +13,7 @@ Then, to create a Notification Service Extension, create a new target in your pr
 
 Then, when sending notifications via APNS:
 - include the mutable-content flag in your aps payload (this key must be present in the aps payload or the system will not call your app extension) 
-- and custom key:value pair(s) with the necessary data to construct the download url for the media you want to display (your app extension code will then read these key-value pairs to initiate the media download on the device).  Apple supports images, video, audio and gif.
+- add custom key:value pair(s) to the payload with the necessary data to construct the download url for the media you want to display (your app extension code will then read these key-value pairs to initiate the media download on the device).  Apple supports images, video, audio and gif.
 
 When using the CleverTap Dashboard to send push, select Advanced, set the mutable-content flag check box and add your key:value pair(s).
 
