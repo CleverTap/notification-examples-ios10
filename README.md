@@ -1,2 +1,23 @@
-# notification-examples-ios10
-Swift and Objc example Notification Service Extension projects
+# iOS 10 Rich Push Notification Example Projects
+
+Rich push notifications are enabled in iOS 10 via a Notification Service Extension.
+
+Be sure to enable push notifications in your main app in the normal way.
+
+Then, to create a Notification Service Extension, create a new target in your project and select Notification Service Extension.
+
+![notification service extension](https://github.com/CleverTap/notification-examples-ios10/blob/master/images/service_extension.png)
+
+
+Then include the mutable-content flag in your aps payload and custom key:value pair(s) with the url to the media you want to display (your app extension code will then read these key-value pairs to initiate the media download on the device.
+
+When using the CleverTap Dashboard, select Advanced, and set the mutable-content flag check box and add your key:value pairs.
+
+![clevertap dashboard](https://github.com/CleverTap/notification-examples-ios10/blob/master/images/service_extension.png)
+
+
+See [an example Swift project here](https://github.com/CleverTap/notification-examples-ios10/blob/master/notif10swift/NotificationService/NotificationService.swift).
+
+See [an example Objective-C project here](https://github.com/CleverTap/notification-examples-ios10/blob/master/notif10objc/NotificationService/NotificationService.m).
+
+
