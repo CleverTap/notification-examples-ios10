@@ -1,7 +1,7 @@
 # iOS 10 Rich Push Notification Example Projects
 
-![push1](https://github.com/CleverTap/notification-examples-ios10/blob/master/images/push1.PNG)
-![push2](https://github.com/CleverTap/notification-examples-ios10/blob/master/images/push2.PNG)
+![push1](https://github.com/CleverTap/notification-examples-ios10/blob/master/images/push1a.PNG)
+![push2](https://github.com/CleverTap/notification-examples-ios10/blob/master/images/push2a.PNG)
 
 Rich push notifications are enabled in iOS 10 via a [Notification Service Extension](https://developer.apple.com/reference/usernotifications/unnotificationserviceextension), a separate and distinct binary embedded in your app bundle.
 
@@ -15,7 +15,7 @@ Then, when sending notifications via APNS, include the mutable-content flag in y
 
 When using the CleverTap Dashboard to send push, select Advanced, set the mutable-content flag check box and add your key:value pair(s).
 
-![clevertap dashboard](https://github.com/CleverTap/notification-examples-ios10/blob/master/images/service_extension.png)
+![clevertap dashboard](https://github.com/CleverTap/notification-examples-ios10/blob/master/images/dashboard.png)
 
 See [an example Swift project here](https://github.com/CleverTap/notification-examples-ios10/blob/master/notif10swift/NotificationService/NotificationService.swift).
 
