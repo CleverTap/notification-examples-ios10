@@ -127,7 +127,7 @@ class NotificationService: UNNotificationServiceExtension {
         
         if let bestAttemptContent = bestAttemptContent {
             // Modify the notification content here...
-            bestAttemptContent.title = "\(bestAttemptContent.title) [modified]"
+            //bestAttemptContent.title = "\(bestAttemptContent.title) [modified]"
             
             let userInfo = bestAttemptContent.userInfo
             // check for a media attachment
