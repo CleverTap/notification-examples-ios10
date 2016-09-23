@@ -3,7 +3,7 @@ import UIKit
 import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
@@ -22,6 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func registerPush() {
+        UNUserNotificationCenter.current().delegate = self
+        
         // request permissions
         UNUserNotificationCenter.current().requestAuthorization(options: [.sound, .alert, .badge]) {
             (granted, error) in
@@ -36,9 +38,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
         print("did receive remote notification \(userInfo)")
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print("did receive remote notification completionHandler \(userInfo)")
     }
 
     // MARK UNNotificationCenter Delegate Methods
@@ -46,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-    
+        
     /**
      If your app is in the foreground when a notification arrives, the notification center calls this method to deliver the notification directly to your app. If you implement this method, you can take whatever actions are necessary to process the notification and update your app. When you finish, execute the completionHandler block and specify how you want the system to alert the user, if at all.
      
@@ -55,6 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      see https://developer.apple.com/reference/usernotifications/unusernotificationcenterdelegate/1649518-usernotificationcenter
      
      **/
+        
+        print("APPDELEGATE: willPresentNotification \(notification.request.content.userInfo)")
         
     }
     
@@ -73,6 +80,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      see https://developer.apple.com/reference/usernotifications/unusernotificationcenterdelegate/1649501-usernotificationcenter
          
      **/
+        
+        print("APPDELEGATE: didReceiveResponseWithCompletionHandler \(response.notification.request.content.userInfo)")
+        
+        // if you wish CleverTap to record the notification open and fire any deep links contained in the payload
+        CleverTap.sharedInstance().handleNotification(withData: response.notification.request.content.userInfo)
+        
+        completionHandler()
     
     }
     

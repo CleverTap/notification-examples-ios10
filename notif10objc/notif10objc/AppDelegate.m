@@ -47,6 +47,8 @@
      see https://developer.apple.com/reference/usernotifications/unusernotificationcenterdelegate/1649518-usernotificationcenter?language=objc
      
      **/
+    
+    NSLog(@"APPDELEGATE: willPresentNotification %@", notification.request.content.userInfo);
 }
 
 
@@ -64,19 +66,32 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
      see https://developer.apple.com/reference/usernotifications/unusernotificationcenterdelegate/1649501-usernotificationcenter?language=objc
      
     **/
-        
+    
+     NSLog(@"APPDELEGATE: didReceiveNotificationResponse: withCompletionHandler %@", response.notification.request.content.userInfo);
+    
+    // if you wish CleverTap to record the notification open and fire any deep links contained in the payload
+    [[CleverTap sharedInstance] handleNotificationWithData:response.notification.request.content.userInfo];
+    
+    completionHandler();
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    NSLog(@"did receive notification %@", userInfo);
+    NSLog(@"APPDELEGATE: didReceiveRemoteNotification %@", userInfo);
 }
 
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    NSLog(@"APPDELEGATE: didReceiveRemoteNotification:fetchCompletionHandler %@", userInfo);
+    
+    completionHandler(UIBackgroundFetchResultNoData);
+    
+}
 
 - (BOOL)application:(UIApplication *)app
             openURL:(NSURL *)url
             options:(NSDictionary *)options {
     
-    NSLog(@"open url %@", url);
+    NSLog(@"APPDELEGATE: open url %@", url);
     return YES;
 }
 
