@@ -13,11 +13,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
-    [CleverTap setDebugLevel:1];
+    [CleverTap setDebugLevel:CleverTapLogDebug];
     [CleverTap autoIntegrate];
     [self registerPush];
-    
     return YES;
 }
 
@@ -25,10 +23,11 @@
     
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     center.delegate = self;
-    
     [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error){
         if( !error ){
-            [[UIApplication sharedApplication] registerForRemoteNotifications];
+            dispatch_async(dispatch_get_main_queue(), ^{
+             [[UIApplication sharedApplication] registerForRemoteNotifications];
+          });
         }
     }];
 }
@@ -51,10 +50,7 @@
     NSLog(@"APPDELEGATE: willPresentNotification %@", notification.request.content.userInfo);
 }
 
-
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center
-didReceiveNotificationResponse:(UNNotificationResponse *)response
-         withCompletionHandler:(void (^)())completionHandler {
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
     
     /**
      Use this method to perform the tasks associated with your app’s custom actions. When the user responds to a notification, the system calls this method with the results. You use this method to perform the task associated with that action, if at all. At the end of your implementation, you must call the completionHandler block to let the system know that you are done processing the notification.
@@ -65,20 +61,15 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
      
      see https://developer.apple.com/reference/usernotifications/unusernotificationcenterdelegate/1649501-usernotificationcenter?language=objc
      
-    **/
+     **/
     
-     NSLog(@"APPDELEGATE: didReceiveNotificationResponse: withCompletionHandler %@", response.notification.request.content.userInfo);
+    NSLog(@"APPDELEGATE: didReceiveNotificationResponse: withCompletionHandler %@", response.notification.request.content.userInfo);
     
     // if you wish CleverTap to record the notification open and fire any deep links contained in the payload
     [[CleverTap sharedInstance] handleNotificationWithData:response.notification.request.content.userInfo];
     
     completionHandler();
 }
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    NSLog(@"APPDELEGATE: didReceiveRemoteNotification %@", userInfo);
-}
-
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"APPDELEGATE: didReceiveRemoteNotification:fetchCompletionHandler %@", userInfo);

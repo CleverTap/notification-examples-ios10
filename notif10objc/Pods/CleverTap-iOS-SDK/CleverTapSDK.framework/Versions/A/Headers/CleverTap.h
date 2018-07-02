@@ -2,16 +2,37 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
+#if defined(CLEVERTAP_HOST_WATCHOS)
+#import <WatchConnectivity/WatchConnectivity.h>
+#endif
+
+#if TARGET_OS_TV
+#define CLEVERTAP_TVOS_EXTENSION 1
+#endif
+
+#if defined(CLEVERTAP_APP_EXTENSION) || defined(CLEVERTAP_TVOS_EXTENSION)
+#define CLEVERTAP_NO_INAPP_SUPPORT 1
+#define CLEVERTAP_NO_LOCATION_SUPPORT 1
+#define CLEVERTAP_NO_REACHABILITY_SUPPORT 1
+#endif
+
 @protocol CleverTapSyncDelegate;
-#if !defined(CLEVERTAP_APP_EXTENSION)
+#if !CLEVERTAP_NO_INAPP_SUPPORT
 @protocol CleverTapInAppNotificationDelegate;
 #endif
+
 
 @class CleverTapEventDetail;
 @class CleverTapUTMDetail;
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedMethodInspection"
+
+typedef NS_ENUM(int, CleverTapLogLevel) {
+    CleverTapLogOff = -1,
+    CleverTapLogInfo = 0,
+    CleverTapLogDebug = 1
+};
 
 @interface CleverTap : NSObject
 
@@ -57,17 +78,32 @@ elsewhere in your code, you can use this singleton or call sharedInstance.
  @method
  
  @abstract
- Change the CleverTap accountID and token
+ Set the CleverTap accountID and token
  
  @discussion
- Changes the CleverTap account associated with the app on the fly.  Should only used during testing.
- Instead, considering relying on the separate -Test account created for your app in CleverTap.
+ Sets the CleverTap account credentials.  Once the SDK is intialized subsequent calls will be ignored
  
  @param accountID  the CleverTap account id
- @param token       the CleverTap account token
+ @param token      the CleverTap account token
  
  */
 + (void)changeCredentialsWithAccountID:(NSString *)accountID andToken:(NSString *)token;
+
+/*!
+ @method
+ 
+ @abstract
+ Set the CleverTap accountID, token and region
+ 
+ @discussion
+ Sets the CleverTap account credentials.  Once the SDK is intialized subsequent calls will be ignored
+ 
+ @param accountID  the CleverTap account id
+ @param token      the CleverTap account token
+ @param region     the dedicated CleverTap region
+ 
+ */
++ (void)changeCredentialsWithAccountID:(NSString *)accountID token:(NSString *)token region:(NSString *)region;
 
 #if !defined(CLEVERTAP_APP_EXTENSION)
 /*!
@@ -105,7 +141,7 @@ elsewhere in your code, you can use this singleton or call sharedInstance.
  */
 + (void)disablePersonalization;
 
-
+#if !CLEVERTAP_NO_LOCATION_SUPPORT
 /*!
  @method
  
@@ -120,7 +156,6 @@ elsewhere in your code, you can use this singleton or call sharedInstance.
  */
 + (void)setLocation:(CLLocationCoordinate2D)location;
 
-#if !defined(CLEVERTAP_APP_EXTENSION)
 /*!
  @method
  
@@ -138,7 +173,7 @@ elsewhere in your code, you can use this singleton or call sharedInstance.
  for, among other things, more fine-grained geo-targeting and segmentation purposes.
 */
 + (void)getLocationWithSuccess:(void (^)(CLLocationCoordinate2D location))success andError:(void (^)(NSString *reason))error;
-#endif
+#endif // CLEVERTAP_NO_LOCATION_SUPPORT
 
 /*!
  @method
@@ -173,6 +208,35 @@ elsewhere in your code, you can use this singleton or call sharedInstance.
  */
 - (void)onUserLogin:(NSDictionary *)properties;
 
+/*!
+ @method
+ 
+ @abstract
+ Enables tracking opt out for the currently active user.
+ 
+ @discussion
+ Use this method to opt the current user out of all event/profile tracking.
+ You must call this method separately for each active user profile (e.g. when switching user profiles using onUserLogin).
+ Once enabled, no events will be saved remotely or locally for the current user. To re-enable tracking call this method with enabled set to NO.
+ 
+ @param enabled         BOOL Whether tracking opt out should be enabled/disabled.
+ */
+- (void)setOptOut:(BOOL)enabled;
+
+/*!
+ @method
+ 
+ @abstract
+ Enables the reporting of device network-related information, including IP address.  This reporting is disabled by default.
+ 
+ @discussion
+ Use this method to enable device network-related information tracking, including IP address.
+ This reporting is disabled by default.  To re-disable tracking call this method with enabled set to NO.
+ 
+ @param enabled         BOOL Whether device network info reporting should be enabled/disabled.
+ */
+- (void)enableDeviceNetworkInfoReporting:(BOOL)enabled;
+
 #pragma mark Profile API
 
 /*!
@@ -185,13 +249,6 @@ elsewhere in your code, you can use this singleton or call sharedInstance.
  Property keys must be NSString and values must be one of NSString, NSNumber, BOOL, NSDate.
  
  To add a multi-value (array) property value type please use profileAddValueToSet: forKey:
- 
- Keys are limited to 32 characters.
- Values are limited to 120 bytes.  
- 
- Longer will be truncated.
- 
- Maximum number of custom profile attributes is 63
  
  @param properties       properties dictionary
  */
@@ -219,7 +276,7 @@ elsewhere in your code, you can use this singleton or call sharedInstance.
  
  @discussion
  Key must be NSString.
- Values must be NSStrings, max 40 bytes.  Longer will be truncated.
+ Values must be NSStrings.
  Max 100 values, on reaching 100 cap, oldest value(s) will be removed.
 
  
@@ -240,7 +297,7 @@ elsewhere in your code, you can use this singleton or call sharedInstance.
  
  @discussion
  Key must be NSString.
- Values must be NSStrings, max 40 bytes. Longer will be truncated.
+ Values must be NSStrings.
  Max 100 values, on reaching 100 cap, oldest value(s) will be removed.
 
  
@@ -260,7 +317,7 @@ elsewhere in your code, you can use this singleton or call sharedInstance.
  
  @discussion
  Key must be NSString.
- Values must be NSStrings, max 40 bytes. Longer will be truncated.
+ Values must be NSStrings.
  Max 100 values, on reaching 100 cap, oldest value(s) will be removed.
  
  
@@ -439,6 +496,19 @@ elsewhere in your code, you can use this singleton or call sharedInstance.
  */
 
 - (void)recordErrorWithMessage:(NSString *)message andErrorCode:(int)code;
+
+#if !defined(CLEVERTAP_APP_EXTENSION)
+/*!
+ @method
+ 
+ @abstract
+ Record a screen view.
+ 
+ @param screenName           the screen name
+ */
+- (void)recordScreenView:(NSString *)screenName;
+
+#endif
 
 /*!
  @method
@@ -630,7 +700,7 @@ extern NSString *const CleverTapProfileDidInitializeNotification;
  */
 - (void)setSyncDelegate:(id <CleverTapSyncDelegate>)delegate;
 
-#if !defined(CLEVERTAP_APP_EXTENSION)
+#if !CLEVERTAP_NO_INAPP_SUPPORT
 /*!
 
  @method
@@ -688,15 +758,40 @@ extern NSString *const CleverTapProfileDidInitializeNotification;
  
  @discussion
  By calling this method, CleverTap will automatically track user notification interaction for you.
- If the push notification contains a deep link, CleverTap will handle the call to application:openUrl: with the deep link.
+ If the push notification contains a deep link, CleverTap will handle the call to application:openUrl: with the deep link, as long as the application is not in the foreground.
  
  @param data         notification payload
  */
 - (void)handleNotificationWithData:(id)data;
 
+/*!
+ @method
+ 
+ @abstract
+ Track and process a push notification based on its payload.
+ 
+ @discussion
+ By calling this method, CleverTap will automatically track user notification interaction for you.
+ If the push notification contains a deep link, CleverTap will handle the call to application:openUrl: with the deep link, as long as the application is not in the foreground or you pass TRUE in the openInForeground param.
+ 
+ @param data                     notification payload
+ @param openInForeground         Boolean as to whether the SDK should open any deep link attached to the notification while the application is in the foreground.
+ */
+- (void)handleNotificationWithData:(id)data openDeepLinksInForeground:(BOOL)openInForeground;
+
+/*!
+ @method
+ 
+ @abstract
+ Determine whether a notification originated from CleverTap
+ 
+ @param payload  notification payload
+ */
+- (BOOL)isCleverTapNotification:(NSDictionary *)payload;
+
 #endif
 
-#if !defined(CLEVERTAP_APP_EXTENSION)
+#if !CLEVERTAP_NO_INAPP_SUPPORT
 /*!
  @method
  
@@ -759,12 +854,25 @@ extern NSString *const CleverTapProfileDidInitializeNotification;
  Set the debug logging level
  
  @discussion
- 0 = off, 1 = on
+ Set using CleverTapLogLevel enum values (or the corresponding int values).
+ SDK logging defaults to CleverTapLogInfo, which prints minimal SDK integration-related messages
  
- @param level  the level to set (0 or 1)
+ CleverTapLogOff - turns off all SDK logging.
+ CleverTapLogInfo - default, prints minimal SDK integration related messages.
+ CleverTapLogDebug - enables verbose debug logging.
+ In Swift, use the respective rawValues:  CleverTapLogLevel.off.rawValue, CleverTapLogLevel.info.rawValue,
+ CleverTapLogLevel.debug.rawValue.
  
+ @param level  the level to set
  */
 + (void)setDebugLevel:(int)level;
+
+#if defined(CLEVERTAP_HOST_WATCHOS)
+/** HostWatchOS
+ */
+
+- (BOOL)handleMessage:(NSDictionary<NSString *, id> *)message forWatchSession:(WCSession *)session;
+#endif
 
 
 #pragma mark deprecations as of version 2.0.3

@@ -1,6 +1,6 @@
 
-#import <UserNotifications/UserNotifications.h>
+#import <CTNotificationService/CTNotificationService.h>
 
-@interface NotificationService : UNNotificationServiceExtension
+@interface NotificationService : CTNotificationServiceExtension
 
 @end

@@ -1,6 +1,7 @@
 
 import UIKit
 import UserNotifications
+import CleverTapSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -10,14 +11,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        CleverTap.setDebugLevel(1)
+        CleverTap.setDebugLevel(CleverTapLogLevel.debug.rawValue)
         CleverTap.autoIntegrate()
-        
-        // register for push notifications on next tick
-        DispatchQueue.main.async {
-            self.registerPush()
-        }
-        
+        // register for push notifications
+        self.registerPush()
         return true
     }
     
@@ -28,7 +25,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UNUserNotificationCenter.current().requestAuthorization(options: [.sound, .alert, .badge]) {
             (granted, error) in
             if (granted) {
-                UIApplication.shared.registerForRemoteNotifications()
+                DispatchQueue.main.async {
+                   UIApplication.shared.registerForRemoteNotifications()
+                }
             }
         }
     }

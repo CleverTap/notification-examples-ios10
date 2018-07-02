@@ -17,12 +17,10 @@ Then, when sending notifications via [APNS](https://developer.apple.com/library/
 
 When using the CleverTap Dashboard to send push:
 - select Advanced
-- set the mutable-content flag check box and 
-- add your key:value pair(s).
+- activate Rich Media
+- add link to the image
 
 ![clevertap dashboard](https://github.com/CleverTap/notification-examples-ios10/blob/master/images/dashboard.png)
-
-When using the [CleverTap Server API](https://support.clevertap.com/docs/api/working-with-push-notifications.html) to send push: include `"mutable-content": "true"` in the `platform_specific: ios` section of the request payload.
 
 
 See [an example Swift project here](https://github.com/CleverTap/notification-examples-ios10/blob/master/notif10swift/NotificationService/NotificationService.swift).
