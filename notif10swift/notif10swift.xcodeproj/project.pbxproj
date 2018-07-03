@@ -496,7 +496,7 @@
 				DEVELOPMENT_TEAM = A5J34NR598;
 				INFOPLIST_FILE = notif10swift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.clevertap.CleverTapSDKTest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clevertap.notif10swift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -514,7 +514,7 @@
 				DEVELOPMENT_TEAM = A5J34NR598;
 				INFOPLIST_FILE = notif10swift/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.clevertap.CleverTapSDKTest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clevertap.notif10swift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -529,7 +529,7 @@
 				DEVELOPMENT_TEAM = A5J34NR598;
 				INFOPLIST_FILE = NotificationService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.clevertap.CleverTapSDKTest.NotificationService;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clevertap.notif10swift.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -544,7 +544,7 @@
 				DEVELOPMENT_TEAM = A5J34NR598;
 				INFOPLIST_FILE = NotificationService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.clevertap.CleverTapSDKTest.NotificationService;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clevertap.notif10swift.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
